@@ -3,11 +3,56 @@ import { calculateDueDate } from './due-date-calculator';
 
 describe('CalculateDueDate', () => {
   it('shoud calculate due date/time given an issue reported during working hours', () => {
-    const reportTime = new Date(2025, 2, 28, 16, 25, 0);
+    // Case 1
+    let reportedDateTime = new Date(2025, 2, 27, 16, 59, 0);
+    let turnAroundTime = 1;
+    let expectedDueDate = new Date(2025, 2, 28, 9, 59, 0);
+    let computedDueDate = calculateDueDate(reportedDateTime, turnAroundTime);
 
-    const computedDueDate = calculateDueDate(reportTime, 16);
+    const intl = Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: false,
+    });
 
-    const expectedDueDate = new Date(2025, 3, 1, 16, 25, 0);
+    console.group('CASE 1')
+    console.log('Turn around.:', turnAroundTime);
+    console.log('Report Time.:', intl.format(reportedDateTime));
+    console.log('Due Date....:', intl.format(computedDueDate));
+    console.groupEnd();
+
+    expect(expectedDueDate.getTime()).toBe(computedDueDate.getTime());
+
+    // Case 2
+    reportedDateTime = new Date(2025, 2, 28, 15, 0, 0);
+    turnAroundTime = 5;
+    expectedDueDate = new Date(2025, 2, 31, 12, 0, 0);
+    computedDueDate = calculateDueDate(reportedDateTime, turnAroundTime);
+
+    console.group('CASE 2')
+    console.log('Turn around.:', turnAroundTime);
+    console.log('Report Time.:', intl.format(reportedDateTime));
+    console.log('Due Date....:', intl.format(computedDueDate));
+    console.groupEnd();
+
+    expect(expectedDueDate.getTime()).toBe(computedDueDate.getTime());
+
+    // Case 3
+    reportedDateTime = new Date(2025, 2, 31, 14, 12, 0);
+    turnAroundTime = 8;
+    expectedDueDate = new Date(2025, 3, 1, 14, 12, 0);
+    computedDueDate = calculateDueDate(reportedDateTime, turnAroundTime);
+
+    console.group('CASE 3')
+    console.log('Turn around.:', turnAroundTime);
+    console.log('Report Time.:', intl.format(reportedDateTime));
+    console.log('Due Date....:', intl.format(computedDueDate));
+    console.groupEnd();
 
     expect(expectedDueDate.getTime()).toBe(computedDueDate.getTime());
   })

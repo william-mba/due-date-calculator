@@ -13,7 +13,6 @@ export function calculateDueDate(reportedDate: Date, turnAroundTime: number): Da
   const toNextWorkingDay = (date: Date) => {
     if (!isWeekend(date)) {
       date.setDate(date.getDate() + 1);
-      return;
     }
     while (isWeekend(date)) {
       date.setDate(date.getDate() + 1);
