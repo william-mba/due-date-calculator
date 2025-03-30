@@ -1,25 +1,26 @@
-import { describe, it } from 'vitest';
-import { calculateDuteDate } from './due-date-calculator';
+import { describe, expect, it } from 'vitest';
+import { calculateDueDate } from './due-date-calculator';
 
-describe('CalculateDueDate method', () => {
-  it('shoud calculate the due date/time', () => {
-    const reportTime = new Date(2025, 2, 25, 14, 12, 0);
-    const dueDate = calculateDuteDate(reportTime, 16);
-    const expectedTime = new Date(2025, 2, 27, 14, 12, 0);
+describe('CalculateDueDate', () => {
+  it('shoud calculate due date/time given an issue reported during working hours', () => {
+    const reportTime = new Date(2025, 2, 28, 16, 25, 0);
 
-    const intl = Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/New_York',
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-      hour12: false,
-    });
+    const computedDueDate = calculateDueDate(reportTime, 16);
 
-    console.log(intl.format(reportTime));
-    console.log(intl.format(expectedTime));
-    console.log(intl.format(dueDate));
+    const expectedDueDate = new Date(2025, 3, 1, 16, 25, 0);
+
+    expect(expectedDueDate.getTime()).toBe(computedDueDate.getTime());
+  })
+
+  it('should throw an error for issues reported outside working hours', () => {
+    const reportTime = new Date(2025, 2, 30, 16, 25, 0);
+    let thrownedError: unknown | null = null
+    try {
+      calculateDueDate(reportTime, 16);
+    } catch (error) {
+      thrownedError = error
+    }
+    expect(thrownedError).toBeTruthy();
+    expect(thrownedError).not.toBe(null);
   })
 })
