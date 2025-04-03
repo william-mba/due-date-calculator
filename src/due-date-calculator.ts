@@ -33,7 +33,6 @@ export function calculateDueDate(issueReport: IssueReport): Date {
       if (dueDate.getHours() === WORKING_DAY.closing) {
         toNextWorkingDay(dueDate);
         dueDate.setHours(WORKING_DAY.opening);
-        dueDate.setMinutes(dueDate.getMinutes());
       }
     }
   }
