@@ -1,27 +1,25 @@
 const WORKING_DAY = {
   opening: 9,
   closing: 17
+} satisfies WorkingDay
+
+interface WorkingDay {
+  opening: number,
+  closing: number
 }
 
+/**
+ * Returns the calculated due date/time for a given issue reported date and time around time.
+ * @param reportedDate The date/time of the reported issue.
+ * @param turnAroundTime The turn aound time in hours.
+ * @returns The calculated due date.
+ */
 export function calculateDueDate(reportedDate: Date, turnAroundTime: number): Date {
   assertWorkingDay(reportedDate);
 
   const dueDate = new Date(reportedDate);
 
-  // A function that increment the due date 
-  // ensuring it remain inside working days. 
-  const toNextWorkingDay = (date: Date) => {
-    if (!isWeekend(date)) {
-      date.setDate(date.getDate() + 1);
-    }
-    while (isWeekend(date)) {
-      date.setDate(date.getDate() + 1);
-    }
-  }
   while (turnAroundTime > 0) {
-    if (isWeekend(dueDate)) {
-      toNextWorkingDay(dueDate);
-    }
     if (!isWorkingHour(dueDate)) {
       // if due date time it's too early, set it to opening hour
       if (dueDate.getHours() < WORKING_DAY.opening) {
@@ -59,5 +57,13 @@ function assertWorkingDay(date: Date) {
   }
 }
 
+/** Increments date ensuring it remain inside working days.*/
+const toNextWorkingDay = (date: Date) => {
+  date.setDate(date.getDate() + 1);
+  if (!isWeekend(date)) return;
+  while (isWeekend(date)) {
+    date.setDate(date.getDate() + 1);
+  }
+}
 const isWorkingHour = (date: Date) => (date.getHours() >= WORKING_DAY.opening && date.getHours() < WORKING_DAY.closing);
 const isWeekend = (date: Date) => date.getDay() === 6 || date.getDay() === 0;
