@@ -69,6 +69,20 @@ describe('CalculateDueDate', () => {
     console.groupEnd();
 
     expect(expectedDueDate.getTime()).toBe(computedDueDate.getTime());
+
+    // Case 5
+    reportedDateTime = new Date(2025, 3, 8, 14, 12);
+    turnAroundTime = 16;
+    expectedDueDate = new Date(2025, 3, 10, 14, 12);
+    computedDueDate = calculateDueDate(reportedDateTime, turnAroundTime);
+
+    console.group('CASE 5');
+    console.log('Turn around :', turnAroundTime);
+    console.log('Report Time :', intl.format(reportedDateTime));
+    console.log('Due Date    :', intl.format(computedDueDate));
+    console.groupEnd();
+
+    expect(expectedDueDate.getTime()).toBe(computedDueDate.getTime());
   })
 
   it('should throw an error for issues reported outside working hours', () => {
