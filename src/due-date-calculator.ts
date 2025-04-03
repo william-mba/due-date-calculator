@@ -20,18 +20,6 @@ export function calculateDueDate(reportedDate: Date, turnAroundTime: number): Da
   const dueDate = new Date(reportedDate);
 
   while (turnAroundTime > 0) {
-    if (!isWorkingHour(dueDate)) {
-      // if due date time it's too early, set it to opening hour
-      if (dueDate.getHours() < WORKING_DAY.opening) {
-        dueDate.setHours(WORKING_DAY.opening)
-      }
-      // if due date time it's too late, 
-      // set it to opening hour of the next working day
-      else if (dueDate.getHours() >= WORKING_DAY.closing) {
-        toNextWorkingDay(dueDate);
-        dueDate.setHours(WORKING_DAY.opening);
-      }
-    }
     let remainingWorkingHours = WORKING_DAY.closing - dueDate.getHours();
     // Increment the due date time as long as we have not reach the end of the working day 
     // and the turn around time is still greater than zero.
@@ -39,12 +27,19 @@ export function calculateDueDate(reportedDate: Date, turnAroundTime: number): Da
       dueDate.setHours(dueDate.getHours() + 1);
       remainingWorkingHours--;
       turnAroundTime--;
+
       // If we reach the closing hour and the due datetime overlaps in minutes,
       // we want to reschedule the due datetime for the next working day.
       if (dueDate.getHours() === WORKING_DAY.closing && dueDate.getMinutes() > 0) {
         toNextWorkingDay(dueDate);
         dueDate.setHours(WORKING_DAY.opening);
         dueDate.setMinutes(dueDate.getMinutes());
+      }
+      // if due date time it's too late, 
+      // set it to opening hour of the next working day
+      else if (dueDate.getHours() >= WORKING_DAY.closing) {
+        toNextWorkingDay(dueDate);
+        dueDate.setHours(WORKING_DAY.opening);
       }
     }
   }
