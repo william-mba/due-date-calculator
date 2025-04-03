@@ -28,18 +28,12 @@ export function calculateDueDate(reportedDate: Date, turnAroundTime: number): Da
       remainingWorkingHours--;
       turnAroundTime--;
 
-      // If we reach the closing hour and the due datetime overlaps in minutes,
-      // we want to reschedule the due datetime for the next working day.
-      if (dueDate.getHours() === WORKING_DAY.closing && dueDate.getMinutes() > 0) {
+      // if due date time is at closing hour,
+      // we reschedule it to the next working day's opening hour.
+      if (dueDate.getHours() === WORKING_DAY.closing) {
         toNextWorkingDay(dueDate);
         dueDate.setHours(WORKING_DAY.opening);
         dueDate.setMinutes(dueDate.getMinutes());
-      }
-      // if due date time it's too late, 
-      // set it to opening hour of the next working day
-      else if (dueDate.getHours() >= WORKING_DAY.closing) {
-        toNextWorkingDay(dueDate);
-        dueDate.setHours(WORKING_DAY.opening);
       }
     }
   }
