@@ -8,25 +8,25 @@ interface WorkingDay {
   closing: number
 }
 
-/**
- * Returns the calculated due date/time for a given issue reported date and time around time.
- * @param reportedDate The date/time of the reported issue.
- * @param turnAroundTime The turn aound time in hours.
- * @returns The calculated due date.
- */
-export function calculateDueDate(reportedDate: Date, turnAroundTime: number): Date {
-  assertWorkingDay(reportedDate);
+interface IssueReport {
+  reportDate: Date,
+  turnAroundTime: number
+}
 
-  const dueDate = new Date(reportedDate);
+/** Returns the calculated due date/time of the given issue report. */
+export function calculateDueDate(issueReport: IssueReport): Date {
+  assertWorkingDay(issueReport.reportDate);
 
-  while (turnAroundTime > 0) {
+  const dueDate = new Date(issueReport.reportDate);
+
+  while (issueReport.turnAroundTime > 0) {
     let remainingWorkingHours = WORKING_DAY.closing - dueDate.getHours();
     // Increment the due date time as long as we have not reach the end of the working day 
     // and the turn around time is still greater than zero.
-    while (remainingWorkingHours > 0 && turnAroundTime > 0) {
+    while (remainingWorkingHours > 0 && issueReport.turnAroundTime > 0) {
       dueDate.setHours(dueDate.getHours() + 1);
       remainingWorkingHours--;
-      turnAroundTime--;
+      issueReport.turnAroundTime--;
 
       // if due date time is at closing hour,
       // we reschedule it to the next working day's opening hour.
