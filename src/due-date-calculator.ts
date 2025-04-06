@@ -1,11 +1,50 @@
+/** Returns the calculated due date/time of the given issue report. */
+export function calculateDueDate(issueReport: IssueReport = { reportDate: new Date(), turnAroundTime: 3 }): Date {
+  assertIssueReport(issueReport);
+
+  let { turnAroundTime, reportDate } = issueReport;
+  let dueDate = new Date(reportDate);
+
+  while (turnAroundTime > 0) {
+    const remaingWorkingHours = WORKING_DAY.closing - dueDate.getHours();
+    const dueTime = Math.min(turnAroundTime, remaingWorkingHours);
+    dueDate.setHours(dueDate.getHours() + dueTime);
+    if (dueDate.getHours() === WORKING_DAY.closing) {
+      dueDate = toNextWorkingDay(dueDate);
+      dueDate.setHours(WORKING_DAY.opening)
+    }
+    turnAroundTime -= dueTime;
+  }
+  return dueDate;
+}
+
+function assertIssueReport(report: IssueReport) {
+  assertWorkingDay(report.reportDate);
+  assertTurnAroundTime(report.turnAroundTime);
+}
+
+function assertWorkingDay(date: Date) {
+  if (isWeekend(date) || !isWorkingHour(date)) {
+    throw new Error(ERROR_MESSAGES.invalidWorkingHours);
+  }
+}
+
+function assertTurnAroundTime(value: number) {
+  if (isNaN(value) || !Number.isInteger(value) || (value === Infinity || value <= 0)) {
+    throw new Error(ERROR_MESSAGES.invalidTurnAroundTime);
+  }
+}
+
 const WORKING_DAY = {
   opening: 9,
-  closing: 17
+  closing: 17,
+  weekend: [0, 6]
 } satisfies WorkingDay
 
 interface WorkingDay {
   opening: number,
-  closing: number
+  closing: number,
+  weekend: [number, number]
 }
 
 interface IssueReport {
@@ -13,45 +52,24 @@ interface IssueReport {
   turnAroundTime: number
 }
 
-/** Returns the calculated due date/time of the given issue report. */
-export function calculateDueDate(issueReport: IssueReport): Date {
-  assertWorkingDay(issueReport.reportDate);
-
-  const dueDate = new Date(issueReport.reportDate);
-
-  while (issueReport.turnAroundTime > 0) {
-    let remainingWorkingHours = WORKING_DAY.closing - dueDate.getHours();
-    // Increment the due date time as long as we have not reach the end of the working day 
-    // and the turn around time is still greater than zero.
-    while (remainingWorkingHours > 0 && issueReport.turnAroundTime > 0) {
-      dueDate.setHours(dueDate.getHours() + 1);
-      remainingWorkingHours--;
-      issueReport.turnAroundTime--;
-
-      // if due date time is at closing hour,
-      // we reschedule it to the next working day's opening hour.
-      if (dueDate.getHours() === WORKING_DAY.closing) {
-        toNextWorkingDay(dueDate);
-        dueDate.setHours(WORKING_DAY.opening);
-      }
-    }
-  }
-  return dueDate;
-}
-
-function assertWorkingDay(date: Date) {
-  if (isWeekend(date) || !isWorkingHour(date)) {
-    throw new Error("A problem can only be reported during working hours. Between 9AM to 5PM.");
-  }
+export const ERROR_MESSAGES = {
+  invalidWorkingHours: "Invalid working hours. A problem can only be reported during working hours.",
+  invalidTurnAroundTime: "Invalid turnaround time. Turnaround time must be an interger and setted in hour."
 }
 
 /** Increments date ensuring it remain inside working days.*/
-const toNextWorkingDay = (date: Date) => {
-  date.setDate(date.getDate() + 1);
-  if (!isWeekend(date)) return;
-  while (isWeekend(date)) {
+const toNextWorkingDay = (currentDate: Date) => {
+  const date = new Date(currentDate);
+  do {
     date.setDate(date.getDate() + 1);
-  }
+  } while (isWeekend(date));
+  return date
 }
-const isWorkingHour = (date: Date) => (date.getHours() >= WORKING_DAY.opening && date.getHours() < WORKING_DAY.closing);
-const isWeekend = (date: Date) => date.getDay() === 6 || date.getDay() === 0;
+const isWorkingHour = (date: Date) => {
+  const hours = date.getHours();
+  return WORKING_DAY.opening <= hours && hours < WORKING_DAY.closing;
+};
+const isWeekend = (date: Date) => {
+  const day = date.getDay();
+  return WORKING_DAY.weekend.includes(day);
+};

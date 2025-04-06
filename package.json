@@ -4,10 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
     "test": "vitest",
-    "preview": "vite preview",
     "coverage": "vitest run --coverage"
   },
   "devDependencies": {
