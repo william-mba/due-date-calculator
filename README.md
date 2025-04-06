@@ -5,10 +5,6 @@ We where looking for a solution that implements a due date calculator in an issu
 ## Solution
 We have implemented the `calculateDueDate` function that solve this problem.
 
-## API of `calculateDueDate` 
--  Input: Takes the submit date/time and turnaround time.
--  Output: Returns the date/time when the issue is resolved.
-
 ## How to run this project
 ### 1. Install dependencies
 
