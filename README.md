@@ -6,41 +6,48 @@ We were looking for a solution that implements a due date calculator in an issue
 We have implemented the `calculateDueDate` function that solve this problem.
 
 ## How to run this project
-This project use pnpm as the default package manager but you can use your favorite package manager to run the following commands.
 
 ### 1. Install dependencies
 
+npm:
 ```bash
-# using npm
 npm install
-
-# using pnpm
+```
+pnpm:
+```bash
 pnpm install
-
-# using yarn
+```
+yarn:
+```bash
 yarn install
 ```
 
 ### 2. Run tests
+
+npm:
 ```bash
-# using npm
 npm run test
-
-# using pnpm
+```
+pnpm:
+```bash
 pnpm test
-
-# using yarn
+```
+yarn:
+```bash
 yarn test
 ```
 
 ### 3. Run code coverage
+
+npm:
 ```bash
-# using npm
 npm run coverage
-
-# using pnpm
+```
+pnpm:
+```bash
 pnpm coverage
-
-# using yarn
+```
+yarn:
+```bash
 yarn coverage
 ```
