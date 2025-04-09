@@ -1,46 +1,46 @@
 # Due Date Calculator
 ## Problem
-We where looking for a solution that implements a due date calculator in an issue tracking system.
+We were looking for a solution that implements a due date calculator in an issue tracking system.
 
 ## Solution
 We have implemented the `calculateDueDate` function that solve this problem.
 
 ## How to run this project
+This project use pnpm as the default package manager but you can use your favorite package manager to run the following commands.
+
 ### 1. Install dependencies
 
-This project use pnpm as the default package manager but you can use another package manager as well to run the following commands.
-
 ```bash
-# npm
+# using npm
 npm install
 
-# pnpm
+# using pnpm
 pnpm install
 
-# yarn
+# using yarn
 yarn install
 ```
 
 ### 2. Run tests
 ```bash
-# npm
+# using npm
 npm run test
 
-# pnpm
+# using pnpm
 pnpm test
 
-# yarn
+# using yarn
 yarn test
 ```
 
 ### 3. Run code coverage
 ```bash
-# npm
+# using npm
 npm run coverage
 
-# pnpm
+# using pnpm
 pnpm coverage
 
-# yarn
+# using yarn
 yarn coverage
 ```
