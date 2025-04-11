@@ -16,14 +16,13 @@ export function calculateDueDate(
   assertIssueReport(issueReport);
 
   let { turnAroundTime } = issueReport;
-  const dueDate = new Date(issueReport.reportDate);
+  let dueDate = new Date(issueReport.reportDate);
 
   while (turnAroundTime > 0) {
     const dueTime = Math.min(turnAroundTime, WORKING_DAY.getRemainingHours(dueDate));
     dueDate.setHours(dueDate.getHours() + dueTime);
     if (WORKING_DAY.isClosing(dueDate)) {
-      const newDueTime = WORKING_DAY.next(dueDate).setHours(WORKING_DAY.opening);
-      dueDate.setTime(newDueTime);
+      dueDate = WORKING_DAY.next(dueDate);
     }
     turnAroundTime -= dueTime;
   }
@@ -51,21 +50,31 @@ function assertTurnAroundTime(value: unknown): asserts value is number {
     throw new Error(ERROR_MESSAGES.invalidTurnAroundTime);
   }
 }
+/** Sunday */
+type Sunday = 0
+/** Monday */
+type Monday = 1
+/** Tuesday */
+type Tuesday = 2
+/** Wednesday */
+type Wednesday = 3
+/** Thursday */
+type Thursday = 4
+/** Friday */
+type Friday = 5
+/** Saturday */
+type Saturday = 6
 
-/** Week day indice.
- * - 0 => Sunday
- * - 1 => Monday
- * - 2 => Tuesday
- * - 3 => Wednesday
- * - 4 => Thursday
- * - 5 => Friday
- * - 6 => Saturday
- */
-type WeekDay = 0 | 1 | 2 | 3 | 4 | 5 | 6
+/** Week day indice. */
+type WeekDay = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday
 
-interface WorkingDay {
+interface WorkingDayProps {
   opening: number;
   closing: number;
+  holiday?: WeekDay[];
+}
+
+interface WorkingDayAcions {
   /** Returns the next working day. */
   next: (current: Date) => Date;
   isClosing: (current: Date) => boolean;
@@ -78,9 +87,9 @@ interface WorkingDay {
 }
 
 function createWorkingDay(
-  workingDay: Pick<WorkingDay, 'opening' | 'closing'> = { opening: 9, closing: 17 },
+  workingDay: WorkingDayProps = { opening: 9, closing: 17 },
   holiday: WeekDay[] = [0, 6]
-): WorkingDay {
+): WorkingDayAcions {
   function getTotalHours(): number {
     return workingDay.closing - workingDay.opening
   }
@@ -95,13 +104,14 @@ function createWorkingDay(
   function isWorkingHours(date: Date): boolean {
     const hours = date.getHours();
     return workingDay.opening <= hours && hours < workingDay.closing;
-  };
+  }
   function next(current: Date): Date {
     const date = new Date(current);
     do {
       const newDate = date.getDate() + 1
       date.setDate(newDate);
     } while (!isWorkingDay(date));
+    date.setHours(workingDay.opening);
     return date
   }
   function isClosing(current: Date): boolean {
@@ -109,8 +119,6 @@ function createWorkingDay(
   }
 
   return {
-    opening: workingDay.opening,
-    closing: workingDay.closing,
     next,
     isClosing,
     isWorkingDay,
