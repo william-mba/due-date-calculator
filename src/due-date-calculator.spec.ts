@@ -73,7 +73,7 @@ describe('Due Date Calculator', () => {
       }).toThrowError(errorMessage);
     })
 
-    it('shoud throw an error when a infinite value is given', () => {
+    it('shoud throw an error when an infinite value is given', () => {
       expect(() => {
         const turnAroundTime = Infinity;
 
