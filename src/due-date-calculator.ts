@@ -71,7 +71,6 @@ type WeekDay = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Satur
 interface WorkingDayProps {
   opening: number;
   closing: number;
-  holiday?: WeekDay[];
 }
 
 interface WorkingDayAcions {
