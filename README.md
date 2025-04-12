@@ -87,6 +87,6 @@ yarn coverage
 
 <br/>
 
-### :+1: Find this project helpful ?
+### :information_source: Do you find this project helpful?
 
 Thanks to give it a star :star: !
