@@ -73,7 +73,7 @@ interface WorkingDayProps {
   closing: number;
 }
 
-interface WorkingDayAcions {
+interface WorkingDayActions {
   /** Returns the next working day. */
   next: (current: Date) => Date;
   isClosing: (current: Date) => boolean;
@@ -81,14 +81,14 @@ interface WorkingDayAcions {
   isWorkingHours: (date: Date) => boolean;
   /** Returns the total working hours of the day. */
   getTotalHours: () => number;
-  /** Returns the remining working hours of the day. */
+  /** Returns the remaining working hours of the day. */
   getRemainingHours: (current: Date) => number;
 }
 
 function createWorkingDay(
   workingDay: WorkingDayProps = { opening: 9, closing: 17 },
   holiday: WeekDay[] = [0, 6]
-): WorkingDayAcions {
+): WorkingDayActions {
   function getTotalHours(): number {
     return workingDay.closing - workingDay.opening
   }
